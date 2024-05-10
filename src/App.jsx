@@ -78,7 +78,7 @@ const App = () => {
   };
   return (
     <div id="main" className="flex items-center justify-center">
-      <div className="w-[500px] h-[400px] mt-[130px] bg-orange-500">
+      <div className="w-[500px] h-[400px] mt-[130px] bg-purple-500">
         <div className=" flex justify-center items-center text-white text-5xl mt-5 font-normal">
           <h3> {hour} </h3>:<h3>{minute}</h3>:<h3>{second}</h3>
         </div>

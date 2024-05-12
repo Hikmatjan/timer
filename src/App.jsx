@@ -14,7 +14,7 @@ const App = () => {
     setTimeout(() => {
       setLoading(false);
       setIsModalOpen(false);
-    }, 1000);
+    }, 10);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -96,7 +96,7 @@ const App = () => {
           <h3> {milesecond} </h3>
         </div>
         <div className=" w-[80%] m-auto justify-center mt-[100px] flex gap-9">
-          <Button type="primary" onClick={onLap}>
+          <Button type="primary" onClick={() => showModal()}>
             Lap
           </Button>
           {running ? (

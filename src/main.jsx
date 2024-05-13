@@ -7,7 +7,7 @@ import TableWithInput from "./example/index.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
-    {/* <Example /> */}
+    {/* <App /> */}
+    <Example />
   </React.StrictMode>
 );

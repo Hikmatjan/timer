@@ -4,16 +4,16 @@ import { Button, Space, Table, Tag, Form, Input } from "antd";
 const Example = () => {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
-  const [datas, setDatas] = useState([]);
-  // const handleadd = () => {
-  //   if (name && age) {
-  //     setDatas([...datas, { name, age }]);
-  //     setName("");
-  //     setAge("");
-  //   } else {
-  //     ("Iltimos ma'lumot kiriting");
-  //   }
-  // };
+  const [datas, setData] = useState([]);
+  const handleadd = () => {
+    if (name && age) {
+      setData([...datas, { name, age }]);
+      setName("");
+      setAge("");
+    } else {
+      ("Iltimos ma'lumot kiriting");
+    }
+  };
   const columns = [
     {
       title: "Name",
@@ -88,7 +88,12 @@ const Example = () => {
   ];
   return (
     <div>
-      <Table columns={columns} dataSource={data} />
+      {data.map((item, index) => (
+        <tr key={index}>
+          <td>{item.name}</td>
+          <td>{item.age}</td>
+        </tr>
+      ))}
       <Form>
         <Form.Item label="Name">
           <Input />
@@ -98,7 +103,12 @@ const Example = () => {
         </Form.Item>
       </Form>
       <div className=" flex gap-2 ml-8">
-        <Button type="primary" onClick={handleadd}>
+        <Button
+          type="primary"
+          onClick={() => {
+            handleadd;
+          }}
+        >
           Add
         </Button>
         <Button>Delete</Button>

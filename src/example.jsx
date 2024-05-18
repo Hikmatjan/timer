@@ -1,17 +1,32 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Button, Card, Modal, Form, Input, Upload, InputNumber } from "antd";
+import {
+  Button,
+  Card,
+  Modal,
+  Form,
+  Input,
+  Upload,
+  InputNumber,
+  Skeleton,
+} from "antd";
+import useLoader from "../src/generic/skeleton";
 
 const { Meta } = Card;
 
 const Example = () => {
+  const { image_loader } = useLoader();
+  const [open, setOpen] = useState(false);
+  const [flowers, setFlowers] = useState();
+  const [loading] = useState();
   const onFinish = async (values) => {
+    console.log("Received  values from from", values);
     console.log(values);
 
     const shouldUploaded = {
       title: values.title,
       price: values.price,
-      main_image: values.main_image.file.response.image_url,
+      main_image: values.upload.file.response.image_url.url,
       discount: false,
       detailed_images: [
         "https://www.coartsinnovation.com/wp-content/uploads/2021/05/Artificial-Topiary-CAJM-7136.png",
@@ -24,7 +39,7 @@ const Example = () => {
       tags: [],
       comments: [],
       description: "Description",
-      short_description: "short",
+      short_description: "Short description",
     };
     await fetch(
       "http://localhost:8080/api/flower/category/potter-plants?access_token=64bebc1e2c6d3f056a8c85b7",
@@ -40,8 +55,7 @@ const Example = () => {
     ),
       setOpen(false);
   };
-  const [open, setOpen] = useState(false);
-  const [flowers, setFlowers] = useState();
+
   useEffect(() => {
     const fetchdata = async () => {
       const response = await fetch(
@@ -60,7 +74,7 @@ const Example = () => {
         onOk={() => setOpen(false)}
         open={open}
         onCancel={() => setOpen(false)}
-        title="Add Flower"
+        title="Add Flowers"
         footer={false}
       >
         <Form onFinish={onFinish}>
@@ -85,6 +99,64 @@ const Example = () => {
               <Button>Upload</Button>
             </Upload>
           </Form.Item>
+          <div>
+            <Form.Item
+              label="image1"
+              name="upload"
+              rules={[{ required: true, message: "Please add your image" }]}
+            >
+              <Upload
+                action={
+                  "http://localhost:8080/api/upload?access_token=64bebc1e2c6d3f056a8c85b7"
+                }
+                name="image"
+              >
+                <Button>Add</Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item
+              label="image2"
+              name="upload"
+              rules={[{ required: true, message: "Please add your image" }]}
+            >
+              <Upload
+                action={
+                  "http://localhost:8080/api/upload?access_token=64bebc1e2c6d3f056a8c85b7"
+                }
+                name="image"
+              >
+                <Button>Add</Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item
+              label="image3"
+              name="upload"
+              rules={[{ required: true, message: "Please add your image" }]}
+            >
+              <Upload
+                action={
+                  "http://localhost:8080/api/upload?access_token=64bebc1e2c6d3f056a8c85b7"
+                }
+                name="image"
+              >
+                <Button>Add</Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item
+              label="image4"
+              name="upload"
+              rules={[{ required: true, message: "Please add your image" }]}
+            >
+              <Upload
+                action={
+                  "http://localhost:8080/api/upload?access_token=64bebc1e2c6d3f056a8c85b7"
+                }
+                name="image"
+              >
+                <Button>Upload</Button>
+              </Upload>
+            </Form.Item>
+          </div>
           <Form.Item
             label="Price"
             name="price"
@@ -105,19 +177,21 @@ const Example = () => {
       </div>
 
       <div className=" flex items-center flex-col gap-6">
-        {flowers?.map(({ _id, main_image, title, short_description }) => {
-          return (
-            <Card
-              key={_id}
-              style={{
-                width: 240,
-              }}
-              cover={<img alt="example" src={main_image} />}
-            >
-              <Meta title={title} description={short_description} />
-            </Card>
-          );
-        })}
+        {loading
+          ? image_loader
+          : flowers?.map(({ _id, main_image, title, short_description }) => {
+              return (
+                <Card
+                  key={_id}
+                  style={{
+                    width: 240,
+                  }}
+                  cover={<img alt="example" src={main_image} />}
+                >
+                  <Meta title={title} description={short_description} />
+                </Card>
+              );
+            })}
       </div>
     </div>
   );

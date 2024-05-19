@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.slick-dots li button {
+  background-color: #7146a3 !important;
+  opacity: 30%;
+}
+.slick-active button {
+  background-color: #7146a3 !important;
+}

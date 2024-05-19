@@ -1,4 +1,10 @@
 import React from "react";
+import "./index.css";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import {
   Button,
@@ -9,37 +15,44 @@ import {
   Upload,
   InputNumber,
   Skeleton,
+  Mentions,
+  Carousel,
 } from "antd";
-import useLoader from "../src/generic/skeleton";
 
 const { Meta } = Card;
 
 const Example = () => {
-  const { image_loader } = useLoader();
+  const [viewFlower, setViewFlower] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  const [flowers, setFlowers] = useState();
-  const [loading] = useState();
-  const onFinish = async (values) => {
-    console.log("Received  values from from", values);
-    console.log(values);
 
+  const [flowers, setFlowers] = useState();
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const onFinish = async (values) => {
+    // console.log("Received  values from from", values);
+    // console.log(values);
+    const detailed_images = [
+      values.image1.file.response.image_url.url,
+      values.image2.file.response.image_url.url,
+      values.image3.file.response.image_url.url,
+      values.image4.file.response.image_url.url,
+    ];
+    console.log(values);
     const shouldUploaded = {
       title: values.title,
       price: values.price,
       main_image: values.upload.file.response.image_url.url,
-      discount: false,
-      detailed_images: [
-        "https://www.coartsinnovation.com/wp-content/uploads/2021/05/Artificial-Topiary-CAJM-7136.png",
-        "https://www.coartsinnovation.com/wp-content/uploads/2021/05/Artificial-Topiary-CAJM-7136.png",
-        "https://cdn11.bigcommerce.com/s-2mpfm/images/stencil/640w/products/169512/743847/5965__41958.1630728740.jpg?c=2",
-        "https://cdn11.bigcommerce.com/s-2mpfm/images/stencil/640w/products/169089/743279/5493__27309.1630683935.jpg?c=2",
-      ],
+      discount: values.discount,
+      detailed_images: detailed_images,
       rate: 0,
       views: 0,
       tags: [],
-      comments: [],
-      description: "Description",
-      short_description: "Short description",
+      comments: values.comments,
+      description: values.description,
+      short_description: values.short_description,
     };
     await fetch(
       "http://localhost:8080/api/flower/category/potter-plants?access_token=64bebc1e2c6d3f056a8c85b7",
@@ -53,7 +66,25 @@ const Example = () => {
         body: JSON.stringify(shouldUploaded),
       }
     ),
-      setOpen(false);
+      setFlowers([...flowers, shouldUploaded]);
+    setOpen(false);
+  };
+  const removeImage = async (imageId) => {
+    console.log(imageId);
+    await fetch(
+      `http://localhost:8080/api/user/product/potter-plants?access_token=64bebc1e2c6d3f056a8c85b7`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer YOUR_ACCESS_TOKEN",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          _id: "64ec3b19cc4023482b6ef94b",
+        }),
+      }
+    );
+    setFlowers(flowers.filter((flower) => flower._id !== imageId));
   };
 
   useEffect(() => {
@@ -62,13 +93,22 @@ const Example = () => {
         "http://localhost:8080/api/flower/category/potter-plants?access_token=64bebc1e2c6d3f056a8c85b7"
       );
       const data = await response.json();
-      setFlowers(data.data);
+
+      setTimeout(() => {
+        setFlowers(data.data);
+        setLoading(false);
+      }, 1000);
+
       console.log(data);
     };
     fetchdata();
   }, []);
+  const flowerDetails = (flowers) => {
+    setViewFlower(flowers);
+    setIsModalOpen(true);
+  };
   return (
-    <div className="flex items-center justify-center flex-col ">
+    <div className="flex items-center flex-col ">
       <Modal
         okText="Create"
         onOk={() => setOpen(false)}
@@ -86,7 +126,7 @@ const Example = () => {
             <Input />
           </Form.Item>
           <Form.Item
-            label="Upload"
+            label="Main image"
             name="upload"
             rules={[{ required: true, message: "Please add your image" }]}
           >
@@ -99,70 +139,116 @@ const Example = () => {
               <Button>Upload</Button>
             </Upload>
           </Form.Item>
-          <div>
-            <Form.Item
-              label="image1"
-              name="upload"
-              rules={[{ required: true, message: "Please add your image" }]}
+          <Form.Item
+            label="Image1"
+            name="image1"
+            rules={[{ required: true, message: "Please add your image" }]}
+          >
+            <Upload
+              action={
+                "http://localhost:8080/api/upload?access_token=64bebc1e2c6d3f056a8c85b7"
+              }
+              name="image"
             >
-              <Upload
-                action={
-                  "http://localhost:8080/api/upload?access_token=64bebc1e2c6d3f056a8c85b7"
-                }
-                name="image"
-              >
-                <Button>Add</Button>
-              </Upload>
-            </Form.Item>
-            <Form.Item
-              label="image2"
-              name="upload"
-              rules={[{ required: true, message: "Please add your image" }]}
+              <Button>Add</Button>
+            </Upload>
+          </Form.Item>
+          <Form.Item
+            label="Image2"
+            name="image2"
+            rules={[{ required: true, message: "Please add your image" }]}
+          >
+            <Upload
+              action={
+                "http://localhost:8080/api/upload?access_token=64bebc1e2c6d3f056a8c85b7"
+              }
+              name="image"
             >
-              <Upload
-                action={
-                  "http://localhost:8080/api/upload?access_token=64bebc1e2c6d3f056a8c85b7"
-                }
-                name="image"
-              >
-                <Button>Add</Button>
-              </Upload>
-            </Form.Item>
-            <Form.Item
-              label="image3"
-              name="upload"
-              rules={[{ required: true, message: "Please add your image" }]}
+              <Button>Add</Button>
+            </Upload>
+          </Form.Item>
+          <Form.Item
+            label="Image3"
+            name="image3"
+            rules={[{ required: true, message: "Please add your image" }]}
+          >
+            <Upload
+              action={
+                "http://localhost:8080/api/upload?access_token=64bebc1e2c6d3f056a8c85b7"
+              }
+              name="image"
             >
-              <Upload
-                action={
-                  "http://localhost:8080/api/upload?access_token=64bebc1e2c6d3f056a8c85b7"
-                }
-                name="image"
-              >
-                <Button>Add</Button>
-              </Upload>
-            </Form.Item>
-            <Form.Item
-              label="image4"
-              name="upload"
-              rules={[{ required: true, message: "Please add your image" }]}
+              <Button>Add</Button>
+            </Upload>
+          </Form.Item>
+          <Form.Item
+            label="Image4"
+            name="image4"
+            rules={[{ required: true, message: "Please add your image" }]}
+          >
+            <Upload
+              action={
+                "http://localhost:8080/api/upload?access_token=64bebc1e2c6d3f056a8c85b7"
+              }
+              name="image"
             >
-              <Upload
-                action={
-                  "http://localhost:8080/api/upload?access_token=64bebc1e2c6d3f056a8c85b7"
-                }
-                name="image"
-              >
-                <Button>Upload</Button>
-              </Upload>
-            </Form.Item>
-          </div>
+              <Button>Upload</Button>
+            </Upload>
+          </Form.Item>
           <Form.Item
             label="Price"
             name="price"
             rules={[{ required: true, message: "Please add your price" }]}
           >
             <InputNumber />
+          </Form.Item>
+          <Form.Item
+            label="Discount_Price"
+            name="discount_price"
+            rules={[
+              {
+                required: true,
+                message: "Please add your  discount_price",
+              },
+            ]}
+          >
+            <InputNumber />
+          </Form.Item>
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[
+              {
+                required: true,
+                message: "Please add description",
+              },
+            ]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item
+            label="Short_description"
+            name="short_description"
+            rules={[
+              {
+                required: true,
+                message: "Please add short description",
+              },
+            ]}
+          >
+            <Mentions />
+          </Form.Item>
+          <Form.Item
+            label="Comments"
+            name="comments"
+            rules={[
+              {
+                required: true,
+                message: "Please add comments",
+              },
+            ]}
+          >
+            <Input.TextArea rows={4} />
           </Form.Item>
           <Form.Item>
             <Button danger onClick={() => setOpen(false)}>
@@ -172,26 +258,113 @@ const Example = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <div className="absolute top-0 right-2">
+      <Modal
+        open={isModalOpen}
+        title="Flower Details"
+        onCancel={handleCancel}
+        footer={[
+          <Button key="close" onClick={() => setIsModalOpen(false)}>
+            Close
+          </Button>,
+        ]}
+      >
+        {viewFlower && (
+          <>
+            <h4>Title: {viewFlower.title}</h4>
+            <p>Description: {viewFlower.description}</p>
+            <p>Discount Price: {viewFlower.discount_price}</p>
+            <p>Price: {viewFlower.price}</p>
+            <p>Discount: {viewFlower.discount}</p>
+            <p>Short Description: {viewFlower.short_description}</p>
+            <Carousel>
+              {viewFlower.detailed_images.map((img, index) => (
+                <div key={index}>
+                  <img
+                    src={img}
+                    alt={`detail ${index}`}
+                    style={{ width: "100%" }}
+                  />
+                </div>
+              ))}
+            </Carousel>
+          </>
+        )}
+      </Modal>
+
+      <div className="absolute top-0 right-2 ">
         <Button onClick={() => setOpen(true)}>Add</Button>
       </div>
-
-      <div className=" flex items-center flex-col gap-6">
-        {loading
-          ? image_loader
-          : flowers?.map(({ _id, main_image, title, short_description }) => {
+      <div className="items-center justify-between gap-4">
+        {loading ? (
+          <>
+            <Skeleton active paragraph={{ rows: 1 }} />
+            <Skeleton active paragraph={{ rows: 1 }} />
+            <Skeleton active paragraph={{ rows: 1 }} />
+            <Skeleton active paragraph={{ rows: 1 }} />
+            <Skeleton active paragraph={{ rows: 1 }} />
+            <Skeleton active paragraph={{ rows: 1 }} />
+            <Skeleton active paragraph={{ rows: 1 }} />
+            <Skeleton active paragraph={{ rows: 1 }} />
+            <Skeleton active paragraph={{ rows: 1 }} />
+          </>
+        ) : (
+          flowers.map(
+            ({
+              _id,
+              main_image,
+              title,
+              short_description,
+              discount,
+              discount_price,
+              detailed_images,
+              description,
+              price,
+            }) => {
               return (
                 <Card
                   key={_id}
                   style={{
                     width: 240,
                   }}
-                  cover={<img alt="example" src={main_image} />}
+                  cover={
+                    <Carousel autoplay>
+                      {detailed_images.map((main_image, index) => (
+                        <div key={index}>
+                          <img alt={`flower-${index}`} src={main_image} />
+                        </div>
+                      ))}
+                    </Carousel>
+                  }
+                  actions={[
+                    <SettingOutlined
+                      key="setting"
+                      onClick={() =>
+                        flowerDetails({
+                          _id,
+                          main_image,
+                          title,
+                          short_description,
+                          description,
+                          price,
+                          discount,
+                          discount_price,
+                          detailed_images,
+                        })
+                      }
+                    />,
+                    <EditOutlined key="edit" />,
+                    <DeleteOutlined
+                      key="delete"
+                      onClick={() => removeImage(_id)}
+                    />,
+                  ]}
                 >
                   <Meta title={title} description={short_description} />
                 </Card>
               );
-            })}
+            }
+          )
+        )}
       </div>
     </div>
   );

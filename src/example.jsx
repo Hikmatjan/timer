@@ -22,11 +22,10 @@ import {
 const { Meta } = Card;
 
 const Example = () => {
-  const [viewFlower, setViewFlower] = useState(null);
+  const [seeFlower, setSeeFlower] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-
   const [flowers, setFlowers] = useState();
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -76,7 +75,8 @@ const Example = () => {
       {
         method: "DELETE",
         headers: {
-          Authorization: "Bearer YOUR_ACCESS_TOKEN",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0YzAyZDEwMzIwNjk5ODJkYmJhOTRlZiIsIm5hbWUiOiJUZXN0Iiwic3VybmFtZSI6IlRlc3RvdiIsInBhc3N3b3JkIjoidGVzdF90ZXN0IiwicGVybWlzc2lvbiI6eyJjcmVhdGUiOmZhbHNlLCJ1cGRhdGUiOmZhbHNlLCJkZWxldGUiOmZhbHNlLCJyZWFkIjp0cnVlfSwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsInVzZXJfdHlwZSI6Im9ic2VydmVyIiwiY3JlYXRlX3Bvc3RfbGltaXQiOjAsImNyZWF0ZV9hY2NvdW50X2xpbWl0IjowLCJjcmVhdGVfcGxhbnRfbGltaXQiOjAsImhhc2h0YWdzIjpbXSwid2lzaGxpc3QiOltdLCJjcmVhdGVkX2F0IjoiMjAyMy0wNy0yNVQyMDoxNDowOC4wNDhaIiwiX192IjowfSwiaWF0IjoxNjkwMzE2MjY3fQ.Lwf1q47UoD5eUzFp4IXjgCD05xvnDrojZ5lST9mrMfc",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -104,7 +104,7 @@ const Example = () => {
     fetchdata();
   }, []);
   const flowerDetails = (flowers) => {
-    setViewFlower(flowers);
+    setSeeFlower(flowers);
     setIsModalOpen(true);
   };
   return (
@@ -268,20 +268,20 @@ const Example = () => {
           </Button>,
         ]}
       >
-        {viewFlower && (
+        {seeFlower && (
           <>
-            <h4>Title: {viewFlower.title}</h4>
-            <p>Description: {viewFlower.description}</p>
-            <p>Discount Price: {viewFlower.discount_price}</p>
-            <p>Price: {viewFlower.price}</p>
-            <p>Discount: {viewFlower.discount}</p>
-            <p>Short Description: {viewFlower.short_description}</p>
+            <h4>Title: {seeFlower.title}</h4>
+            <p>Description: {seeFlower.description}</p>
+            <p>Discount Price: {seeFlower.discount_price}</p>
+            <p>Price: {seeFlower.price}</p>
+            <p>Discount: {seeFlower.discount}</p>
+            <p>Short Description: {seeFlower.short_description}</p>
             <Carousel>
-              {viewFlower.detailed_images.map((img, index) => (
+              {seeFlower.detailed_images.map((img, index) => (
                 <div key={index}>
                   <img
                     src={img}
-                    alt={`detail ${index}`}
+                    // alt={`detail ${index}`}
                     style={{ width: "100%" }}
                   />
                 </div>
@@ -297,13 +297,7 @@ const Example = () => {
       <div className="items-center justify-between gap-4">
         {loading ? (
           <>
-            <Skeleton active paragraph={{ rows: 1 }} />
-            <Skeleton active paragraph={{ rows: 1 }} />
-            <Skeleton active paragraph={{ rows: 1 }} />
-            <Skeleton active paragraph={{ rows: 1 }} />
-            <Skeleton active paragraph={{ rows: 1 }} />
-            <Skeleton active paragraph={{ rows: 1 }} />
-            <Skeleton active paragraph={{ rows: 1 }} />
+            <Skeleton active paragraph={{ rows: 4 }} />
             <Skeleton active paragraph={{ rows: 1 }} />
             <Skeleton active paragraph={{ rows: 1 }} />
           </>
